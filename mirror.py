@@ -1,18 +1,21 @@
 from PIL import Image, ImageOps
 
-def mirror_image(input_path, output_path, mirror_type='ambos'):
-    original_image = Image.open(input_path)
+class ImageMirror:
+    def __init__(self, input_path):
+        self.original_image = Image.open(input_path)
 
-    if mirror_type == 'vertical':
-        mirrored_image = ImageOps.mirror(original_image)
-    elif mirror_type == 'horizontal':
-        mirrored_image = ImageOps.flip(original_image)
-    elif mirror_type == 'ambos':
-        mirrored_image = ImageOps.mirror(ImageOps.flip(original_image))
-    else:
-        raise ValueError("Invalid mirror_type. Use 'vertical', 'horizontal', ou 'ambos'.")
+    def mirror_image(self, mirror_type='ambos'):
+        if mirror_type == 'vertical':
+            self.mirrored_image = ImageOps.mirror(self.original_image)
+        elif mirror_type == 'horizontal':
+            self.mirrored_image = ImageOps.flip(self.original_image)
+        elif mirror_type == 'ambos':
+            self.mirrored_image = ImageOps.mirror(ImageOps.flip(self.original_image))
+        else:
+            raise ValueError("Invalid mirror_type. Use 'vertical', 'horizontal', ou 'ambos'.")
 
-    mirrored_image.save(output_path)
+    def save_image(self, output_path):
+        self.mirrored_image.save(output_path)
 
 def main():
     input_image_path = input("Escreva o caminho para a imagem: ")
@@ -20,12 +23,14 @@ def main():
     mirror_type = input("Digite onde quer aplicar o efeito espelho (vertical, horizontal, ou ambos): ").lower()
 
     while mirror_type not in ['vertical', 'horizontal', 'ambos']:
-        print("Invalid mirror type. Please enter 'vertical', 'horizontal', or 'ambos'.")
-        mirror_type = input("Enter mirror type (vertical, horizontal, or ambos): ").lower()
+        print("Invalid mirror type. Use 'vertical', 'horizontal', ou 'ambos'.")
+        mirror_type = input("Digite onde quer aplicar o efeito espelho (vertical, horizontal, ou ambos): ").lower()
+
+    image_mirror = ImageMirror(input_image_path)
+    image_mirror.mirror_image(mirror_type)
 
     output_path = f"imagem_espelhada_{mirror_type}.jpg"
-
-    mirror_image(input_image_path, output_path, mirror_type)
+    image_mirror.save_image(output_path)
 
     print(f"Imagem espelhada {mirror_type} com sucesso. A saída foi salva no {output_path}")
 
